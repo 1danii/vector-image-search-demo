@@ -2,7 +2,7 @@
 // https://orm.drizzle.team/docs/sql-schema-declaration
 
 import { sql } from "drizzle-orm";
-import { index, pgTableCreator } from "drizzle-orm/pg-core";
+import { index, pgTable, pgTableCreator } from "drizzle-orm/pg-core";
 
 /**
  * This is an example of how to use the multi-project schema feature of Drizzle ORM. Use the same
@@ -10,18 +10,22 @@ import { index, pgTableCreator } from "drizzle-orm/pg-core";
  *
  * @see https://orm.drizzle.team/docs/goodies#multi-project-schema
  */
-export const createTable = pgTableCreator((name) => `vector_${name}`);
 
-export const posts = createTable(
-  "post",
+export const images = pgTable(
+  "images",
   (d) => ({
-    id: d.integer().primaryKey().generatedByDefaultAsIdentity(),
-    name: d.varchar({ length: 256 }),
+    id: d.uuid().defaultRandom().primaryKey(),
+    name: d.text().notNull(),
+    description: d.text().notNull(),
+    embedding: d.vector({ dimensions: 1024 }).notNull(),
     createdAt: d
-      .timestamp({ withTimezone: true })
+      .timestamp()
       .default(sql`CURRENT_TIMESTAMP`)
       .notNull(),
-    updatedAt: d.timestamp({ withTimezone: true }).$onUpdate(() => new Date()),
+    updatedAt: d.timestamp().$onUpdate(() => new Date()),
   }),
-  (t) => [index("name_idx").on(t.name)],
+  (t) => [
+    index("name_idx").on(t.name),
+    index("embedding_idx").using("hnsw", t.embedding.op("vector_cosine_ops")),
+  ],
 );
