@@ -21,7 +21,7 @@ export default function RootLayout({
 }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="en" className={`${geist.variable}`}>
-      <body>
+      <body className="bg-muted">
         <Providers>{children}</Providers>
         <Toaster richColors theme="light" />
       </body>

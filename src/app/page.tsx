@@ -12,7 +12,7 @@ export default function HomePage() {
   const [query, setQuery] = useDebounceValue("", 500);
   const [strictMode, setStrictMode] = useState(false);
   return (
-    <main className="bg-muted flex min-h-screen flex-col items-center justify-start">
+    <main className="flex min-h-screen flex-col items-center justify-start">
       <div className="container flex max-w-3xl flex-col items-center justify-center px-4 py-16">
         <UploadForm />
         <div className="mt-8 flex w-full items-center gap-x-2">

@@ -12,7 +12,9 @@ export function UploadForm() {
   const [files, setFiles] = useState<File[] | null>([]);
   const { getRootProps, getInputProps } = useDropzone({
     accept: {
-      "image/": [".jpeg", ".jpg", ".png", ".webp"],
+      "image/png": [".png"],
+      "image/jpeg": [".jpg", ".jpeg"],
+      "image/webp": [".webp"],
     },
     multiple: true,
     onDrop: (files) => {

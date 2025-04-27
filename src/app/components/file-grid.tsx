@@ -10,21 +10,6 @@ import Image from "next/image";
 import { useDeferredValue } from "react";
 import { toast } from "sonner";
 
-function percentageToColor(perc: number) {
-  const b = 0;
-  let r,
-    g = 0;
-  if (perc < 50) {
-    r = 255;
-    g = Math.round(5.1 * perc);
-  } else {
-    g = 255;
-    r = Math.round(510 - 5.1 * perc);
-  }
-  const h = r * 0x10000 + g * 0x100 + b * 0x1;
-  return "#" + ("000000" + h.toString(16)).slice(-6);
-}
-
 export function FileGrid({
   query,
   strict,
@@ -45,7 +30,11 @@ export function FileGrid({
       if (strict) {
         url.searchParams.append("strict", "");
       }
-      const res = await fetch(url.toString());
+      const res = await fetch(url.toString(), {
+        // fixes build ??
+        cache: "no-store",
+      });
+
       if (!res.ok) {
         throw new Error("Error fetching files");
       }
@@ -114,4 +103,19 @@ export function FileGridSkeleton() {
       ))}
     </ul>
   );
+}
+
+function percentageToColor(perc: number) {
+  const b = 0;
+  let r,
+    g = 0;
+  if (perc < 50) {
+    r = 255;
+    g = Math.round(5.1 * perc);
+  } else {
+    g = 255;
+    r = Math.round(510 - 5.1 * perc);
+  }
+  const h = r * 0x10000 + g * 0x100 + b * 0x1;
+  return "#" + ("000000" + h.toString(16)).slice(-6);
 }
